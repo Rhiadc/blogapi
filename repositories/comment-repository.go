@@ -1,18 +1,19 @@
 package repositories
 
 import (
+	"github.com/rhiadc/blogapi/database"
 	"github.com/rhiadc/blogapi/models"
 )
 
 func NewComment(postId uint64, comment models.Comment) error {
-	db := models.Connect()
+	db := database.Connect()
 	defer db.Close()
 	comment.PostId = postId
 	return db.Create(&comment).Error
 }
 
 func GetComments(postId uint64) []models.Comment {
-	db := models.Connect()
+	db := database.Connect()
 	defer db.Close()
 	var comments []models.Comment
 	db.Where("post_id = ?", postId).Find(&comments)
@@ -25,7 +26,7 @@ func GetComments(postId uint64) []models.Comment {
 }
 
 func DeleteComment(postId uint64, commentId uint64) error {
-	db := models.Connect()
+	db := database.Connect()
 	defer db.Close()
 	var comment models.Comment
 
@@ -36,4 +37,17 @@ func DeleteComment(postId uint64, commentId uint64) error {
 	}
 
 	return nil
+}
+
+func UpdateComment(comment models.Comment) (int64, error) {
+	db := database.Connect()
+	defer db.Close()
+
+	rs := db.Model(&comment).Where("id = ?", comment.ID).UpdateColumns(
+		map[string]interface{}{
+			"comment": comment.Comment,
+		},
+	)
+
+	return rs.RowsAffected, rs.Error
 }

@@ -23,8 +23,8 @@ func InitRoutes(sm *mux.Router) {
 	deleteRouter.HandleFunc("/posts/{id}/comments/{comment_id}", controllers.DeleteComment)
 	deleteRouter.HandleFunc("/posts/{id}", controllers.DeletePost)
 
-	// putRouter := sm.Methods("PUT").Subrouter()
-	// putRouter.HandleFunc("/users/{id}", controllers.UpdateUser)
-	// putRouter.HandleFunc("/post/{id}", controllers.UpdatePost)
-	// putRouter.HandleFunc("/posts/{id}/comments/{comment_id}", controllers.UpdateComment)
+	putRouter := sm.Methods("PUT").Subrouter()
+	putRouter.HandleFunc("/users/{id}", controllers.UpdateUser)
+	putRouter.HandleFunc("/post/{id}", controllers.UpdatePost)
+	putRouter.HandleFunc("/posts/{id}/comments/{comment_id}", controllers.UpdateComment)
 }
