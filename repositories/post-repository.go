@@ -20,3 +20,29 @@ func GetPosts() []models.Post {
 	}
 	return posts
 }
+
+func GetPost(id uint64) (*models.Post, error) {
+	db := models.Connect()
+	defer db.Close()
+
+	var post models.Post
+
+	if err := db.First(&post, id).Error; err != nil {
+		return nil, err
+	}
+
+	return &post, nil
+}
+
+func DeletePost(id uint64) error {
+	db := models.Connect()
+	defer db.Close()
+
+	var post models.Post
+
+	if err := db.Where("id = ?", id).Delete(&post).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

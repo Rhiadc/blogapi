@@ -20,3 +20,57 @@ func NewUser(user models.User) error {
 	}
 	return db.Create(&user).Error
 }
+
+func GetUsers() []models.User {
+	db := models.Connect()
+	defer db.Close()
+
+	var user []models.User
+
+	db.Find(&user)
+
+	for i, _ := range user {
+		db.Model(user[i]).Related(&user[i].Posts)
+	}
+
+	return user
+}
+
+func GetUser(id uint64) (*models.User, error) {
+	db := models.Connect()
+	defer db.Close()
+
+	var user models.User
+
+	if err := db.First(&user, id).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func DeleteUser(id uint64) error {
+	db := models.Connect()
+	defer db.Close()
+
+	var user models.User
+
+	if err := db.Where("id = ?", id).Delete(&user).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func UpdateUser(user models.User) (int64, error) {
+	db := models.Connect()
+	defer db.Close()
+
+	rs := db.Model(&user).Where("id = ?", user.ID).UpdateColumns(
+		map[string]interface{}{
+			"nickname": user.Nickname,
+			"email":    user.Email,
+		},
+	)
+	return rs.RowsAffected, rs.Error
+}

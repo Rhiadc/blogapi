@@ -29,3 +29,27 @@ func GetPosts(w http.ResponseWriter, r *http.Request) {
 	posts := repositories.GetPosts()
 	utils.ToJson(w, posts, http.StatusOK)
 }
+
+func GetPost(w http.ResponseWriter, r *http.Request) {
+	id := utils.GetID(r)
+	post, err := repositories.GetPost(id)
+
+	if err != nil {
+		utils.ToJson(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	utils.ToJson(w, post, http.StatusOK)
+}
+
+func DeletePost(w http.ResponseWriter, r *http.Request) {
+	id := utils.GetID(r)
+
+	err := repositories.DeletePost(id)
+
+	if err != nil {
+		utils.ToJson(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	utils.ToJson(w, "Post successfully deleted", http.StatusNoContent)
+}
