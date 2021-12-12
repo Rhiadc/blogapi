@@ -1,16 +1,19 @@
 package repositories
 
-import "github.com/rhiadc/blogapi/models"
+import (
+	"github.com/rhiadc/blogapi/database"
+	"github.com/rhiadc/blogapi/models"
+)
 
 func NewPost(post models.Post) error {
-	db := models.Connect()
+	db := database.Connect()
 	defer db.Close()
 
 	return db.Create(&post).Error
 }
 
 func GetPosts() []models.Post {
-	db := models.Connect()
+	db := database.Connect()
 	defer db.Close()
 	var posts []models.Post
 	db.Find(&posts)
@@ -22,7 +25,7 @@ func GetPosts() []models.Post {
 }
 
 func GetPost(id uint64) (*models.Post, error) {
-	db := models.Connect()
+	db := database.Connect()
 	defer db.Close()
 
 	var post models.Post
@@ -35,7 +38,7 @@ func GetPost(id uint64) (*models.Post, error) {
 }
 
 func DeletePost(id uint64) error {
-	db := models.Connect()
+	db := database.Connect()
 	defer db.Close()
 
 	var post models.Post
@@ -45,4 +48,18 @@ func DeletePost(id uint64) error {
 	}
 
 	return nil
+}
+
+func UpdatePost(post models.Post) (int64, error) {
+	db := database.Connect()
+	defer db.Close()
+
+	rs := db.Model(&post).Where("id = ?", post.ID).UpdateColumns(
+		map[string]interface{}{
+			"title":   post.Title,
+			"content": post.Content,
+		},
+	)
+
+	return rs.RowsAffected, rs.Error
 }

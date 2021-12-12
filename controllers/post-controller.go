@@ -17,6 +17,11 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := models.ValidatePost(post); err != nil {
+		utils.ToJson(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
 	if err := repositories.NewPost(post); err != nil {
 		utils.ToJson(w, err.Error(), http.StatusUnprocessableEntity)
 		return
@@ -52,4 +57,28 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	utils.ToJson(w, "Post successfully deleted", http.StatusNoContent)
+}
+
+func UpdatePost(w http.ResponseWriter, r *http.Request) {
+	id := utils.GetID(r)
+
+	body := utils.BodyParser(r)
+	var post models.Post
+	err := json.Unmarshal(body, &post)
+
+	if err != nil {
+		utils.ToJson(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	post.ID = uint32(id)
+
+	_, err = repositories.UpdatePost(post)
+
+	if err != nil {
+		utils.ToJson(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
+	utils.ToJson(w, "post successfully updated", http.StatusOK)
 }

@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"github.com/rhiadc/blogapi/auth"
+	"github.com/rhiadc/blogapi/database"
 	"github.com/rhiadc/blogapi/models"
 )
 
@@ -10,7 +11,7 @@ type UserRepo interface {
 }
 
 func NewUser(user models.User) error {
-	db := models.Connect()
+	db := database.Connect()
 	defer db.Close()
 	var err error
 	user.Password, err = auth.Hash(user.Password)
@@ -22,7 +23,7 @@ func NewUser(user models.User) error {
 }
 
 func GetUsers() []models.User {
-	db := models.Connect()
+	db := database.Connect()
 	defer db.Close()
 
 	var user []models.User
@@ -37,7 +38,7 @@ func GetUsers() []models.User {
 }
 
 func GetUser(id uint64) (*models.User, error) {
-	db := models.Connect()
+	db := database.Connect()
 	defer db.Close()
 
 	var user models.User
@@ -50,7 +51,7 @@ func GetUser(id uint64) (*models.User, error) {
 }
 
 func DeleteUser(id uint64) error {
-	db := models.Connect()
+	db := database.Connect()
 	defer db.Close()
 
 	var user models.User
@@ -62,8 +63,8 @@ func DeleteUser(id uint64) error {
 	return nil
 }
 
-func UpdateUser(user models.User) (int64, error) {
-	db := models.Connect()
+func UpdateUser(user *models.User) (int64, error) {
+	db := database.Connect()
 	defer db.Close()
 
 	rs := db.Model(&user).Where("id = ?", user.ID).UpdateColumns(

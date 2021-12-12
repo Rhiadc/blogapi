@@ -17,6 +17,11 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := models.ValidateUser(user); err != nil {
+		utils.ToJson(w, err.Error(), http.StatusUnprocessableEntity)
+		return
+	}
+
 	if err := repositories.NewUser(user); err != nil {
 		utils.ToJson(w, err.Error(), http.StatusUnprocessableEntity)
 		return
@@ -60,7 +65,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	body := utils.BodyParser(r)
 	var user models.User
-	err := json.Unmarshal(body, user)
+	err := json.Unmarshal(body, &user)
 
 	if err != nil {
 		utils.ToJson(w, err.Error(), http.StatusUnprocessableEntity)
@@ -69,12 +74,12 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	user.ID = uint32(id)
 
-	rows, err := repositories.UpdateUser(user)
+	_, err = repositories.UpdateUser(&user)
 
 	if err != nil {
 		utils.ToJson(w, err.Error(), http.StatusUnprocessableEntity)
 		return
 	}
 
-	utils.ToJson(w, rows, http.StatusOK)
+	utils.ToJson(w, "User successfully updated", http.StatusOK)
 }
