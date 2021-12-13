@@ -72,7 +72,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user.ID = uint32(id)
+	user.ID = id
 
 	_, err = repositories.UpdateUser(&user)
 

@@ -3,13 +3,15 @@ package config
 import (
 	"fmt"
 	"os"
+
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 func BuildDSN() string {
 
 	host := os.Getenv("DB_HOST")
 	if host == "" {
-		host = "localhost"
+		host = "postgres"
 	}
 
 	port := os.Getenv("DB_PORT")
@@ -32,5 +34,5 @@ func BuildDSN() string {
 		dbname = "blogapi"
 	}
 
-	return fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", host, user, dbname, pass)
+	return fmt.Sprintf("host=%s user=%s dbname=postgres sslmode=disable password=%s", host, user, pass)
 }
