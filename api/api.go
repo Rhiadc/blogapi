@@ -13,6 +13,7 @@ func Run() {
 	// 	- testes
 	// 	- jwt e autenticação
 	// 	- env
-	// 	- docker e kubernetes
+	//  - refactor
+	//  - kubernetes
 	// 	- deploy na aws
 }

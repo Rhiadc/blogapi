@@ -75,3 +75,16 @@ func UpdateUser(user *models.User) (int64, error) {
 	)
 	return rs.RowsAffected, rs.Error
 }
+
+func GetByEmail(email string) (*models.User, error) {
+	db := database.Connect()
+	defer db.Close()
+
+	var user models.User
+
+	if err := db.First(&user, "email = ?", email).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}

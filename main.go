@@ -6,6 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/rhiadc/blogapi/api"
+	"github.com/rhiadc/blogapi/database/redis"
 	"github.com/rhiadc/blogapi/routes"
 )
 
@@ -17,5 +18,7 @@ func main() {
 	routes.InitRoutes(sm)
 
 	fmt.Println("Server running on port 8080")
+	redis.InitRedis()
 	http.ListenAndServe(":8080", sm)
+
 }

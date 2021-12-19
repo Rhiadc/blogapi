@@ -5,8 +5,8 @@ services:
     build: .
     ports:
       - 8080:8080
-    #volumes:
-    #  - .:/blogapi
+    volumes:
+      - /tmp/app:/app
     depends_on:
       - postgres
     #env_file: .env
@@ -22,3 +22,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_HOST: localhost
       POSTGRES_PASSWORD: postgres 
+    
+  redis:
+    image: redis
+    container_name: redis
+    depends_on:
+      - postgres     
+    ports:      
+      - 6379:6379

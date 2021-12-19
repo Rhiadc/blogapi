@@ -3,15 +3,15 @@ package database
 import "github.com/rhiadc/blogapi/models"
 
 var (
-	DBNAME = "blogapi"
+	name = "blogapi"
 )
 
 func AutoMigrations() {
 	db := Connect()
 
 	defer db.Close()
-	db.Exec("CREATE DATABASE IF NOT EXISTS " + DBNAME + ";")
-	db.Exec("USE " + DBNAME)
+	db.Exec("CREATE DATABASE " + name)
+	db.Exec("USE " + name)
 
 	db.Debug().DropTableIfExists(&models.Comment{}, &models.Post{}, &models.User{})
 	db.Debug().AutoMigrate(&models.User{}, &models.Post{}, &models.Comment{})
